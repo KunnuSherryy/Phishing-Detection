@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard - Advanced URL Scanner</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="matrix-bg" id="matrixBg"></div>
+
+    <div class="floating-elements" id="floatingElements"></div>
+
+    <div class="status-indicator">
+        <span id="statusText">SYSTEM ONLINE</span>
+    </div>
+
+    <div class="terminal-text">
+        > Initializing phishing detection protocols...<br>
+        > Neural network: ACTIVE<br>
+        > Security level: MAXIMUM
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="logo">PhishGuard</h1>
+            <p class="subtitle">Advanced URL Security Scanner</p>
+        </div>
+
+        <form class="scanner-form" id="scannerForm" action="/check" method="post">
+            <div class="form-group">
+                <label for="urlInput" class="form-label">Enter Suspicious URL:</label>
+                <input type="url" id="urlInput" class="url-input" placeholder="https://suspicious-website.com"
+                    name="url" required>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span id="btnText">SCAN FOR THREATS</span>
+            </button>
+        </form>
+        <h1 style="margin-top: 10px; color: {{ 'green' if result == 'Legitimate Website' else 'red' }};">
+            {{ result }}
+        </h1>
+    </div>
+
+    <script>
+        // Matrix background animation
+        function createMatrixEffect() {
+            const matrixBg = document.getElementById('matrixBg');
+            const characters = '01アカサタナハマヤラワガザダバパイキシチニヒミリギジヂビピウクスツヌフムユルグズヅブプエケセテネヘメレゲゼデベペオコソトノホモヨロゴゾドボポヴッン';
+
+            function createColumn() {
+                const column = document.createElement('div');
+                column.classList.add('matrix-column');
+                column.style.left = Math.random() * 100 + '%';
+                column.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                column.style.fontSize = (Math.random() * 10 + 10) + 'px';
+
+                let text = '';
+                for (let i = 0; i < Math.random() * 20 + 10; i++) {
+                    text += characters.charAt(Math.floor(Math.random() * characters.length)) + '\n';
+                }
+                column.textContent = text;
+
+                matrixBg.appendChild(column);
+
+                setTimeout(() => {
+                    column.remove();
+                }, 5000);
+            }
+
+            setInterval(createColumn, 200);
+        }
+
+        // Create floating elements
+        function createFloatingElements() {
+            const container = document.getElementById('floatingElements');
+            const icons = ['🔒', '🛡️', '⚠️', '🔍', '💀', '🚫', '⚡', '🔐'];
+
+            function createFloatingIcon() {
+                const icon = document.createElement('div');
+                icon.classList.add('floating-icon');
+                icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+                icon.style.left = Math.random() * 100 + '%';
+                icon.style.top = Math.random() * 100 + '%';
+
+                container.appendChild(icon);
+
+                // GSAP animation for floating icons
+                gsap.to(icon, {
+                    x: (Math.random() - 0.5) * 400,
+                    y: (Math.random() - 0.5) * 400,
+                    rotation: Math.random() * 360,
+                    duration: Math.random() * 5 + 3,
+                    ease: "power2.inOut",
+                    repeat: -1,
+                    yoyo: true
+                });
+
+                gsap.to(icon, {
+                    opacity: 0,
+                    duration: 8,
+                    delay: 2,
+                    onComplete: () => icon.remove()
+                });
+            }
+
+            setInterval(createFloatingIcon, 1000);
+        }
+
+        // Status text animation
+        function animateStatusText() {
+            const statusTexts = [
+                'SYSTEM ONLINE',
+                'SCANNING NETWORK',
+                'THREAT ANALYSIS',
+                'SECURITY ACTIVE',
+                'NEURAL NET READY',
+                'PHISH DETECTOR ON'
+            ];
+
+            let currentIndex = 0;
+            const statusElement = document.getElementById('statusText');
+
+            setInterval(() => {
+                gsap.to(statusElement, {
+                    opacity: 0,
+                    duration: 0.3,
+                    onComplete: () => {
+                        currentIndex = (currentIndex + 1) % statusTexts.length;
+                        statusElement.textContent = statusTexts[currentIndex];
+                        gsap.to(statusElement, {
+                            opacity: 1,
+                            duration: 0.3
+                        });
+                    }
+                });
+            }, 3000);
+        }
+
+        // Form animations
+        function initFormAnimations() {
+            const form = document.querySelector('.scanner-form');
+            const logo = document.querySelector('.logo');
+            const subtitle = document.querySelector('.subtitle');
+            const urlInput = document.getElementById('urlInput');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Initial animations
+            gsap.from(logo, {
+                opacity: 0,
+                y: -50,
+                duration: 1,
+                ease: "power3.out"
+            });
+
+            gsap.from(subtitle, {
+                opacity: 0,
+                y: -30,
+                duration: 1,
+                delay: 0.3,
+                ease: "power3.out"
+            });
+
+            gsap.from(form, {
+                opacity: 0,
+                scale: 0.8,
+                duration: 1,
+                delay: 0.6,
+                ease: "back.out(1.7)"
+            });
+
+            // Input focus animations
+            urlInput.addEventListener('focus', () => {
+                gsap.to(form, {
+                    scale: 1.02,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            });
+
+            urlInput.addEventListener('blur', () => {
+                gsap.to(form, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            });
+
+            // Button hover animations
+            submitBtn.addEventListener('mouseenter', () => {
+                gsap.to(submitBtn, {
+                    scale: 1.05,
+                    duration: 0.2,
+                    ease: "power2.out"
+                });
+            });
+
+            submitBtn.addEventListener('mouseleave', () => {
+                gsap.to(submitBtn, {
+                    scale: 1,
+                    duration: 0.2,
+                    ease: "power2.out"
+                });
+            });
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            createMatrixEffect();
+            createFloatingElements();
+            animateStatusText();
+            initFormAnimations();
+            handleFormSubmission();
+
+            // Continuous logo glow animation
+            gsap.to('.logo', {
+                textShadow: '0 0 40px #00ff00',
+                duration: 2,
+                repeat: -1,
+                yoyo: true,
+                ease: "power2.inOut"
+            });
+
+            // Scanner form border glow
+            gsap.to('.scanner-form', {
+                boxShadow: '0 0 50px rgba(0, 255, 0, 0.5)',
+                duration: 3,
+                repeat: -1,
+                yoyo: true,
+                ease: "power2.inOut"
+            });
+        });
+    </script>
+</body>
+
+</html>
